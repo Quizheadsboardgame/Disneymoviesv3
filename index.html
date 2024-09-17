@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/oVD2GzE.png" alt="Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "What is the name of the young girl who discovers a magical world in 'Alice in Wonderland'?", answer: "Alice" },
+            { question: "In 'The Lion King', what is the name of Simba's father?", answer: "Mufasa" },
+            { question: "Which Disney princess has a pet chameleon named Pascal?", answer: "Rapunzel" },
+            { question: "What is the name of the fish who is the main character in 'Finding Nemo'?", answer: "Nemo" },
+            { question: "Who is the villain in 'Maleficent'?", answer: "Maleficent" },
+            { question: "In 'Beauty and the Beast', what is the name of Belle's father?", answer: "Maurice" },
+            { question: "What type of animal is Dumbo?", answer: "Elephant" },
+            { question: "In 'Aladdin', what is the name of Aladdin's monkey friend?", answer: "Abu" },
+            { question: "Who is the fashion-obsessed villain in '101 Dalmatians'?", answer: "Cruella de Vil" },
+            { question: "In 'Mulan', what is the name of the dragon who accompanies Mulan?", answer: "Mushu" },
+            { question: "What is the name of the snowman in 'Frozen'?", answer: "Olaf" },
+            { question: "In 'The Little Mermaid', what is the name of Ariel's crab friend?", answer: "Sebastian" },
+            { question: "Who is the main antagonist in 'The Little Mermaid'?", answer: "Ursula" },
+            { question: "In 'Cinderella', what does the fairy godmother transform into a carriage?", answer: "A pumpkin" },
+            { question: "What is the name of the young boy who never grows up in 'Peter Pan'?", answer: "Peter Pan" },
+            { question: "In 'Snow White and the Seven Dwarfs', what is the name of the evil queen?", answer: "The Queen" },
+            { question: "What kind of animal is Bambi?", answer: "A deer" },
+            { question: "Who is the main character in 'The Jungle Book'?", answer: "Mowgli" },
+            { question: "In 'Tarzan', what is the name of Tarzan's ape father?", answer: "Kerchak" },
+            { question: "What is the name of the horse in 'Beauty and the Beast'?", answer: "Phillip" },
+            { question: "In 'The Aristocats', what are the names of the three kittens?", answer: "Berlioz, Toulouse, and Marie" },
+            { question: "In 'Robin Hood', who is the main antagonist?", answer: "Prince John" },
+            { question: "What is the name of the young girl who befriends the bear in 'The Jungle Book'?", answer: "Mowgli" },
+            { question: "In 'Ratatouille', what is the name of the rat who dreams of becoming a chef?", answer: "Remy" },
+            { question: "What is the name of the old man who is the protagonist in 'Up'?", answer: "Carl Fredricksen" },
+            { question: "In 'Monsters, Inc.', what is the name of the one-eyed monster?", answer: "Mike Wazowski" },
+            { question: "In 'Wreck-It Ralph', what is the name of the bad guy who wants to be a hero?", answer: "Wreck-It Ralph" },
+            { question: "Who is the princess in 'Sleeping Beauty'?", answer: "Aurora" },
+            { question: "In 'Pocahontas', who is the captain of the ship that arrives in America?", answer: "John Smith" },
+            { question: "What is the name of the bear in 'The Jungle Book'?", answer: "Baloo" },
+            { question: "In 'Hercules', what is the name of Hercules' mentor?", answer: "Philoctetes" },
+            { question: "Who is the main character in 'Lilo & Stitch'?", answer: "Lilo" },
+            { question: "In 'Bambi', who is Bambi's best friend?", answer: "Thumper" },
+            { question: "What is the name of the horse in 'Mulan'?", answer: "Khan" },
+            { question: "In 'Finding Dory', what is the name of Dory's friend?", answer: "Marlin" },
+            { question: "In 'Pocahontas', what is the name of Pocahontas' raccoon friend?", answer: "Meeko" },
+            { question: "Who is the princess in 'The Princess and the Frog'?", answer: "Tiana" },
+            { question: "In 'The Lion King', who is Simba's evil uncle?", answer: "Scar" },
+            { question: "What is the name of the main character in 'Mulan'?", answer: "Mulan" },
+            { question: "In 'Cinderella', what are the names of Cinderella's stepsisters?", answer: "Anastasia and Drizella" },
+            { question: "In 'Alice in Wonderland', what is the name of the cat who can disappear and reappear?", answer: "Cheshire Cat" },
+            { question: "What is the name of the little girl in 'The Incredibles'?", answer: "Violet" },
+            { question: "In 'Moana', what is the name of the demigod who helps Moana?", answer: "Maui" },
+            { question: "What is the name of the dog in 'Lady and the Tramp'?", answer: "Lady" },
+            { question: "In 'The Hunchback of Notre Dame', what is the name of the bell ringer?", answer: "Quasimodo" },
+            { question: "In 'Bolt', what is the name of Bolt's owner?", answer: "Penny" },
+            { question: "In 'The Rescuers', what are the names of the two mice who rescue a girl?", answer: "Bernard and Miss Bianca" },
+            { question: "In 'Oliver & Company', what is the name of the stray kitten who is the main character?", answer: "Oliver" },
+            { question: "What is the name of the dog in '101 Dalmatians'?", answer: "Pongo" },
+            { question: "In 'The Sword in the Stone', who pulls the sword from the stone?", answer: "Arthur" },
+            { question: "In 'Robin Hood', who is the leader of the Merry Men?", answer: "Robin Hood" },
+            { question: "What is the name of the princess in 'Snow White'?", answer: "Snow White" },
+            { question: "In 'Tangled', what is the name of Rapunzel's prince?", answer: "Flynn Rider" },
+            { question: "In 'The Lion King', who is the wise mandrill?", answer: "Rafiki" },
+            { question: "What is the name of the bear in 'The Jungle Book'?", answer: "Baloo" },
+            { question: "In 'The Little Mermaid', what is Ariel's father's name?", answer: "King Triton" },
+            { question: "Who is the villain in 'Hercules'?", answer: "Hades" },
+            { question: "What is the name of the young elephant in 'Dumbo'?", answer: "Dumbo" },
+            { question: "In 'Beauty and the Beast', who is the candlestick?", answer: "Lumière" },
+            { question: "In 'The Fox and the Hound', what are the names of the two main characters?", answer: "Tod and Copper" },
+            { question: "What is the name of the girl who is the main character in 'Pocahontas'?", answer: "Pocahontas" },
+            { question: "In 'Lilo & Stitch', what is the name of Stitch's experiment number?", answer: "626" },
+            { question: "What is the name of the heroine in 'Mulan'?", answer: "Mulan" },
+            { question: "Who is the villain in 'Aladdin'?", answer: "Jafar" },
+            { question: "What is the name of the main character in 'The Aristocats'?", answer: "Duchess" },
+            { question: "In 'Frozen', what is the name of Anna's sister?", answer: "Elsa" },
+            { question: "What is the name of the toy cowboy in 'Toy Story'?", answer: "Woody" },
+            { question: "In 'Cars', what is the name of Lightning McQueen's mentor?", answer: "Doc Hudson" },
+            { question: "In 'Winnie the Pooh', what is the name of Pooh's best friend who is a donkey?", answer: "Eeyore" },
+            { question: "What is the name of the protagonist in 'Hercules'?", answer: "Hercules" },
+            { question: "In 'The Lion King', what is the name of the hyena who is the leader of the pack?", answer: "Shenzi" },
+            { question: "What is the name of the bear who helps Christopher Robin in 'Winnie the Pooh'?", answer: "Pooh" },
+            { question: "In 'The Princess and the Frog', who turns into a frog?", answer: "Prince Naveen" },
+            { question: "What is the name of the frog who helps Tiana in 'The Princess and the Frog'?", answer: "Ray" },
+            { question: "In 'Alice in Wonderland', what is the name of the queen who orders beheadings?", answer: "The Queen of Hearts" },
+            { question: "In 'The Jungle Book', who is the leader of the wolves?", answer: "Akela" },
+            { question: "What is the name of the princess in 'Sleeping Beauty'?", answer: "Aurora" },
+            { question: "In 'Tarzan', what is the name of Tarzan's girlfriend?", answer: "Jane" },
+            { question: "In 'The Little Mermaid', who is the chef who tries to cook Sebastian?", answer: "Chef Louis" },
+            { question: "In 'The Rescuers Down Under', what is the name of the Australian boy who needs rescuing?", answer: "Cody" },
+            { question: "In 'Robin Hood', what is the name of the sheriff who causes trouble for Robin Hood?", answer: "Sheriff of Nottingham" },
+            { question: "In 'The Emperor's New Groove', who is the emperor?", answer: "Kuzco" },
+            { question: "In 'Brother Bear', what animal does the main character turn into?", answer: "A bear" },
+            { question: "What is the name of the heroine in 'The Princess and the Frog'?", answer: "Tiana" },
+            { question: "In 'Finding Nemo', who is Nemo's dad?", answer: "Marlin" },
+            { question: "In 'Moana', what does Moana set out to restore?", answer: "The heart of Te Fiti" },
+            { question: "In 'Zootopia', what is Judy Hopps' profession?", answer: "Police officer" },
+            { question: "In 'Ratatouille', what is Remy's dream?", answer: "To become a chef" },
+            { question: "What is the name of the superhero family in 'The Incredibles'?", answer: "The Parr family" },
+            { question: "In 'A Bug's Life', what is the name of the ant who leads the rebellion?", answer: "Flik" },
+            { question: "In 'Cars', what is Lightning McQueen's number?", answer: "95" },
+            { question: "In 'The Good Dinosaur', what is the name of the young dinosaur who befriends Arlo?", answer: "Spot" },
+            { question: "In 'Inside Out', what is the name of the emotion represented by a red ball?", answer: "Anger" },
+            { question: "In 'Tangled', what is the name of Rapunzel's chameleon friend?", answer: "Pascal" },
+            { question: "In 'Dumbo', what is the name of the mouse who helps Dumbo?", answer: "Timothy" },
+            { question: "In 'Up', what is the name of Carl's deceased wife?", answer: "Ellie" },
+            { question: "In 'Big Hero 6', what is the name of the inflatable robot?", answer: "Baymax" },
+            { question: "In 'Frozen', who is Elsa's sidekick?", answer: "Olaf" },
+            { question: "In 'The Lion King', what is the name of the lioness who is Simba's love interest?", answer: "Nala" },
+            { question: "In 'Moana', who is Moana's grandmother?", answer: "Grandma Tala" },
+            { question: "In 'A Bug's Life', what is the name of the circus bugs' leader?", answer: "P.T. Flea" },
+            { question: "In 'The Jungle Book', what is the name of the tiger who is the main antagonist?", answer: "Shere Khan" },
+            { question: "In 'Lilo & Stitch', what is Stitch's experiment number?", answer: "626" },
+            { question: "In 'Finding Dory', what is the name of the blue tang fish?", answer: "Dory" },
+            { question: "In 'The Emperor's New Groove', who is the villain who turns Kuzco into a llama?", answer: "Yzma" },
+            { question: "In 'Zootopia', what is Judy Hopps' partner's name?", answer: "Nick Wilde" },
+            { question: "In 'Mulan', who is the captain of the Chinese army?", answer: "Li Shang" },
+            { question: "In 'The Lion King', what does Rafiki use to paint Simba's face?", answer: "Mud" },
+            { question: "In 'Beauty and the Beast', who is the teapot?", answer: "Mrs. Potts" },
+            { question: "In 'The Princess and the Frog', who is Tiana's love interest?", answer: "Prince Naveen" },
+            { question: "In 'Ratatouille', what is the name of the restaurant Remy dreams of working in?", answer: "Gusteau's" },
+            { question: "In 'Zootopia', what is the name of the city where Judy Hopps lives?", answer: "Zootopia" },
+            { question: "In 'The Good Dinosaur', who is Arlo's father?", answer: "Poppa Henry" }
+        ];
+
+        document.getElementById('quizImage').addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
+            const question = questionsAndAnswers[randomIndex].question;
+            const answer = questionsAndAnswers[randomIndex].answer;
+
+            document.getElementById('question').innerText = question;
+            document.getElementById('answer').innerText = answer;
+        });
+    </script>
+</body>
+</html>
